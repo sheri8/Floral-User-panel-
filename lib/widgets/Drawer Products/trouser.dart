@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floral/main/description/productdescription.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Trouser extends StatefulWidget {
-  final snap2;
-  const Trouser({Key? key, required this.snap2}) : super(key: key);
+  String category;
+  // final snap2;
+  Trouser({Key? key, required this.category}) : super(key: key);
 
   @override
   State<Trouser> createState() => _TrouserState();
@@ -25,7 +27,9 @@ class _TrouserState extends State<Trouser> {
           icon: Icon(Icons.arrow_back, color: Colors.black),
         ),
         title: Text(
-          widget.snap2['Category'],
+          // widget.category['Category'],
+          widget.category,
+
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w800, color: Colors.black),
         ),
@@ -33,7 +37,7 @@ class _TrouserState extends State<Trouser> {
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('Order')
-              .where("Category", isEqualTo: "Trouser")
+              .where("Category", isEqualTo: widget.category)
               .snapshots(),
           builder: (context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -45,49 +49,53 @@ class _TrouserState extends State<Trouser> {
             return SizedBox(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (builder) => ProductDescription(
-                                      snap: snapshot.data!.docs[index],
-                                    )));
-                      },
-                      leading: SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: Image.network(
-                          widget.snap2['Photo Url'],
-                          // snapshot.data!.docs[index]['Photo Url'],
-                          fit: BoxFit.cover,
-                        ),
+              child: ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  print(data.toString());
+                  return ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => ProductDescription(
+                                    snap: data,
+                                  )));
+                    },
+                    leading: SizedBox(
+                      height: 60,
+                      width: 60,
+                      child: Image.network(
+                        data['Photo Url'],
+                        // ['Photo Url'],
+                        // snapshot.data!.docs[index]['Photo Url'],
+                        fit: BoxFit.cover,
                       ),
-                      title: Text(
-                        widget.snap2['Category'],
+                    ),
+                    title: Text(
+                      data['Category'],
+                      // ['Category'],
 
-                        // snapshot.data!.docs[index]['Categroy'],
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text(
-                        widget.snap2['Name'],
+                      // snapshot.data!.docs[index]['Categroy'],
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      data['Color'],
+                      // ['Name'],
 
-                        // snapshot.data!.docs[index]['Name'],
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w400),
-                      ),
-                      trailing: Text(
-                        '\$ ${widget.snap2['Price']}',
-                        // '\$ ${snapshot.data!.docs[index]['Price']}',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w400),
-                      ),
-                    );
-                  }),
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    ),
+                    trailing: Text(
+                      '\$ ${data['Price']}',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    ),
+                  );
+                }).toList(),
+              ),
             );
           }),
     );

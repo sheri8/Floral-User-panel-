@@ -62,38 +62,114 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
               ),
             ),
-            StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('Order').snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return SizedBox(
-                    height: 500,
-                    child: ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (builder) => Trouser(
-                                            snap2: snapshot.data!.docs[index]
-                                                .data())));
-                              },
-                              child: ListTile(
-                                title: Text(
-                                    snapshot.data!.docs[index]['Category']),
-                              ));
-                        }),
-                  );
-                }),
+            categories('Shirt', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Shirt',
+                          )));
+            }),
+            categories('Pent', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Pent',
+                          )));
+            }),
+            categories('Shoes', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Shoes',
+                          )));
+            }),
+            categories('Belt', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Belt',
+                          )));
+            }),
+            categories('Computer', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Computer',
+                          )));
+            }),
+            categories('Charger', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Charger',
+                          )));
+            }),
+            categories('Purse', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Purse',
+                          )));
+            }),
+            categories('Perfumes', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Perfumes',
+                          )));
+            }),
+            categories('Trouser', () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Trouser(
+                            category: 'Trouser',
+                          )));
+            }),
+            // StreamBuilder(
+            //     stream: FirebaseFirestore.instance
+            //         .collection('Order')
+
+            //         // .orderBy('Shirt', descending: true)
+            //         .snapshots(),
+            //     // .take(9),
+            //     builder: (context,
+            //         AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+            //             snapshot) {
+            //       if (snapshot.connectionState == ConnectionState.waiting) {
+            //         return const Center(
+            //           child: CircularProgressIndicator(),
+            //         );
+            //       }
+            //       return SizedBox(
+            //         height: 500,
+            //         child: ListView.builder(
+            //             itemCount: snapshot.data!.docs.length,
+            //             itemBuilder: (BuildContext context, int index) {
+            //               return InkWell(
+            //                   onTap: () {
+            //                     Navigator.push(
+            //                         context,
+            //                         MaterialPageRoute(
+            //                             builder: (builder) => Trouser(
+            //                                 snap2: snapshot.data!.docs[index]
+            //                                     .data())));
+            //                   },
+            //                   child: ListTile(
+            //                     title: Text(
+            //                         snapshot.data!.docs[index]['Category']),
+            //                   ));
+            //             }),
+            //       );
+            //     }),
             Center(
               child: ListTile(
                 onTap: () {
@@ -140,6 +216,16 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  ListTile categories(String title, VoidCallback Function) {
+    return ListTile(
+      onTap: Function,
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
       ),
     );
   }

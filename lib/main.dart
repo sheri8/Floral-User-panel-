@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:floral/authentication/signup.dart';
 import 'package:floral/main/main_screen.dart';
 import 'package:floral/splash/splashscreen.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: MainScreen()
+        home:
+            // SignUp()
+            MainScreen()
         // SplashScreen(),
         );
   }
