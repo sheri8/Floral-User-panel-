@@ -1,15 +1,18 @@
 import 'package:floral/cart/card_message.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
+
+import '../resources/firestore_methods.dart';
 
 class AddToCart extends StatefulWidget {
-  const AddToCart({Key? key}) : super(key: key);
+  final cart_product;
+  const AddToCart({Key? key, required this.cart_product}) : super(key: key);
   @override
   State<AddToCart> createState() => _AddToCartState();
 }
 
 class _AddToCartState extends State<AddToCart> {
+  bool loaded = false;
   int n = 0;
   void add() {
     setState(() {
@@ -20,6 +23,26 @@ class _AddToCartState extends State<AddToCart> {
   void minus() {
     setState(() {
       if (n != 0) n--;
+    });
+  }
+
+  DateTime? _selectedDate;
+  void _presentDatePicker() {
+    // showDatePicker is a pre-made funtion of Flutter
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2020),
+            lastDate: DateTime.now())
+        .then((pickedDate) {
+      // Check if no date is selected
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        // using state so that the UI will be rerendered when date is picked
+        _selectedDate = pickedDate;
+      });
     });
   }
 
@@ -44,7 +67,7 @@ class _AddToCartState extends State<AddToCart> {
               height: MediaQuery.of(context).size.height / 2,
               width: MediaQuery.of(context).size.width,
               child: ListView.builder(
-                  itemCount: 4,
+                  itemCount: 1,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -52,10 +75,12 @@ class _AddToCartState extends State<AddToCart> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CircleAvatar(
-                              backgroundImage: AssetImage('assets/flower.png'),
-                            ),
+                                backgroundImage: NetworkImage(
+                                    widget.cart_product['Photo Url'])
+                                // AssetImage('assets/flower.png'),
+                                ),
                             Text(
-                              ('Four Flowers'),
+                              (widget.cart_product['Category']),
                               style: TextStyle(color: Colors.black),
                             ),
                             Container(
@@ -98,12 +123,24 @@ class _AddToCartState extends State<AddToCart> {
                         fontSize: 22,
                         fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                    '22/12/2022',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500),
+                  InkWell(
+                    onTap: () {
+                      _presentDatePicker();
+                    },
+                    child: Text(
+                      _selectedDate != null
+                          ? DateFormat()
+                              .add_yMEd()
+                              .format(_selectedDate!)
+                              .toString()
+                          : 'Select the Date',
+                      style: const TextStyle(fontSize: 22),
+                      // '22/12/2022',
+                      // style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontSize: 22,
+                      //     fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ],
               ),
@@ -167,19 +204,50 @@ class _AddToCartState extends State<AddToCart> {
               child: Center(
                   child: ElevatedButton(
                 onPressed: () async {
+                  setState(() {
+                    loaded = true;
+                  });
+                  String result = await FirestoreMethods().cart(
+                      date: DateFormat()
+                          .add_yMEd()
+                          .format(_selectedDate!)
+                          .toString(),
+                      category: widget.cart_product['Category'],
+                      image: widget.cart_product['Photo Url'],
+                      quantity: n.toString());
+                  if (result == 'success') {
+                    debugPrint(result);
+                    Navigator.pop(context);
+                    setState(() {
+                      loaded = false;
+                    });
+                  } else {
+                    setState(() {
+                      loaded = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(result),
+                      duration: Duration(seconds: 10),
+                    ));
+                  }
+
                   //  Navigator.push(context, MaterialPageRoute(builder: (builder) => AddToCart()));
                 },
                 style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
                     primary: Color(0xff000000),
                     fixedSize: Size(200, 54)),
-                child: Text(
-                  "Place Order",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
+                child: loaded
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Text(
+                        "Place Order",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
               )),
             )
           ],

@@ -31,7 +31,9 @@ class _TrouserState extends State<Trouser> {
           widget.category,
 
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w800, color: Colors.black),
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: Color.fromARGB(255, 179, 178, 178)),
         ),
       ),
       body: StreamBuilder(

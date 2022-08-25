@@ -43,6 +43,8 @@ dependencies:
   cloud_firestore: ^3.4.4
   uuid: ^3.0.6
   date_time_picker: ^2.1.0
+  date_format: ^2.0.6
+  intl: ^0.17.0
   # flutter_app_packager: ^0.2.4
 
 dev_dependencies:
