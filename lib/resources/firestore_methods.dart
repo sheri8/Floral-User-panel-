@@ -42,6 +42,7 @@ class FirestoreMethods {
     required String category,
     required String image,
     required String quantity,
+    required bool order,
   }) async {
     String res = "Some error occured";
     var uuid = Uuid().v1();
@@ -51,10 +52,13 @@ class FirestoreMethods {
       // await StorageMethods().uploadImageToStorage('Snap', !, true);
       String postId = const Uuid().v1();
       Cart cart = Cart(
-          Date: date,
-          Category: category,
-          ImageUrl: photUrl,
-          quantity: quantity);
+        Date: date,
+        Category: category,
+        ImageUrl: photUrl,
+        quantity: quantity,
+        uuid: uuid,
+        order: 'pending',
+      );
       //  Post post = Post(Cart_Message: cart_message, Feeling: feeling, Date: date
       //       // DateFormat().add_yMEd().format(date).toString(),
       //       );

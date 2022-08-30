@@ -10,18 +10,24 @@ class Cart {
   final String Category;
   final ImageUrl;
   final String quantity;
+  final String order;
+  final String uuid;
 
   const Cart(
       {required this.Date,
       required this.Category,
       required this.ImageUrl,
-      required this.quantity});
+      required this.quantity,
+      required this.order,
+      required this.uuid});
 
   Map<String, dynamic> toJson() => {
         'date': Date,
         'category': Category,
         'image url': ImageUrl,
-        'quantity': quantity
+        'quantity': quantity,
+        'order': order,
+        'uuid': uuid
       };
 
   static Cart fromSnap(DocumentSnapshot snap) {
@@ -31,6 +37,8 @@ class Cart {
         Date: snapshot['Date'] ?? "",
         Category: snapshot['Category'] ?? "",
         ImageUrl: snapshot['ImageUrl'] ?? "",
-        quantity: snapshot['Quantity'] ?? "");
+        quantity: snapshot['Quantity'] ?? "",
+        order: snapshot['Order'] ?? "",
+        uuid: snapshot['uuid'] ?? "");
   }
 }

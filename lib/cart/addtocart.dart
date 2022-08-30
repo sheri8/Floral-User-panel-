@@ -13,6 +13,7 @@ class AddToCart extends StatefulWidget {
 
 class _AddToCartState extends State<AddToCart> {
   bool loaded = false;
+  bool _order = false;
   int n = 0;
   void add() {
     setState(() {
@@ -208,13 +209,15 @@ class _AddToCartState extends State<AddToCart> {
                     loaded = true;
                   });
                   String result = await FirestoreMethods().cart(
-                      date: DateFormat()
-                          .add_yMEd()
-                          .format(_selectedDate!)
-                          .toString(),
-                      category: widget.cart_product['Category'],
-                      image: widget.cart_product['Photo Url'],
-                      quantity: n.toString());
+                    date: DateFormat()
+                        .add_yMEd()
+                        .format(_selectedDate!)
+                        .toString(),
+                    category: widget.cart_product['Category'],
+                    image: widget.cart_product['Photo Url'],
+                    quantity: n.toString(),
+                    order: _order,
+                  );
                   if (result == 'success') {
                     debugPrint(result);
                     Navigator.pop(context);
